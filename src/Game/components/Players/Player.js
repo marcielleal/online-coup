@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import uniqid from "uniqid";
+// import uniqid from "uniqid";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,7 +26,19 @@ const Player = ({ G, ctx, playerID, moves, i }) => {
     }
     hand.push(
       card.discarded ? (
-        <div key={uniqid()} className="character-card character-card-discarded"></div>
+        // <div key={uniqid()} className="character-card character-card-discarded"></div>
+        <img
+          onDragStart={(e) => {
+            e.preventDefault();
+          }}
+          draggable={false}
+          key={player.name + cardIndex}
+          className={classNames("character-card", {
+            "character-card-reveal": revealCard,
+          })}
+          src={card.front}
+          alt={card.character}
+        />
       ) : (
         <img
           onDragStart={(e) => {

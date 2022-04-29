@@ -118,7 +118,7 @@ const revealCard = (G, ctx, playerID, cardID) => {
     };
     returnToDeck(G, [Card(G.players[playerID].hand[cardID].character, G.players[playerID].hand[cardID].front)]);
 
-    const { character, front } = G.deck.pop();
+    const { character, front } = G.deck.pop();    // TODO: isso tá trocado não? deveria tirar primeiro e dpois colocar a outra carta
     G.turnLog.challenge.swapCard = { character, front };
   } else {
     // successful challenge, loser of challenge must give up card.
@@ -138,14 +138,11 @@ const revealCard = (G, ctx, playerID, cardID) => {
 
 // Character action: losing a challenge, assassinate, exchange, coup
 const loseCardAndShuffle = (G, ctx, playerID, cardID) => {
-  returnToDeck(G, [Card(G.players[playerID].hand[cardID].character, G.players[playerID].hand[cardID].front)]);
+  // returnToDeck(G, [Card(G.players[playerID].hand[cardID].character, G.players[playerID].hand[cardID].front)]);
 
-  G.players[playerID].hand[cardID] = {
-    character: "",
-    front: "",
-    discarded: true,
-    id: cardID,
-  };
+  console.log(G.players[playerID].hand[cardID]);
+
+  G.players[playerID].hand[cardID].discarded = true;
   updateIsOut(G.players[playerID]);
 
   if (

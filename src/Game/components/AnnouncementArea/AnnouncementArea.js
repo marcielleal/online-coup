@@ -4,7 +4,7 @@ import ChoosingPanel from "./ChoosingPanel";
 import "./AnnouncementArea.scss";
 
 const AnnouncementArea = (props) => {
-  const { G, ctx, playerID, moves } = props;
+  const { G, ctx, playerID, moves, translation, lang } = props;
   const isYourTurn = playerID === ctx.currentPlayer;
   const name = isYourTurn ? "you" : `${G.players[ctx.currentPlayer].name}`;
 
@@ -27,12 +27,10 @@ const AnnouncementArea = (props) => {
     // on successful assassination
     if (ctx.activePlayers[G.turnLog.target.id] === "loseAssassinate") {
       if (G.turnLog.target.id === playerID) {
-        setMsg("choose an influence to give up (assassinated).");
+        setMsg(translation[lang]['chooseGiveUpAssassinated']);
         setMsgLoading(false);
       } else {
-        setMsg(
-          `waiting for ${G.turnLog.target.name} to give up an influence (assassinated)`
-        );
+        setMsg(translation[lang]['waitingGiveUpAssassinated'](G.turnLog.target.name));
         setMsgLoading(true);
       }
     }
@@ -45,12 +43,10 @@ const AnnouncementArea = (props) => {
     ) {
       if (G.turnLog.player.id === playerID) {
         const numToChoose = hand.filter((card) => !card.discarded).length;
-        setMsg(
-          `choose your new hand (${numToChoose}).\n the top two cards from the deck are:`
-        );
+        setMsg(translation[lang]['chooseNewHand'](numToChoose));
         setMsgLoading(false);
       } else {
-        setMsg(`waiting for ${G.turnLog.player.name} to complete the exchange`);
+        setMsg(translation[lang]['waitingExchange'](G.turnLog.player.name));
         setMsgLoading(true);
       }
     }
@@ -66,16 +62,19 @@ const AnnouncementArea = (props) => {
       if (Object.keys(G.turnLog.challenge.loser).length === 0) {
         if (G.turnLog.challenge.challenged.id === playerID) {
           setMsg(
-            `${G.turnLog.challenge.challenger.name} challenges!\n Reveal ${challengeCharacters} or give up a card.`
+            translation[lang]['getChallenged'](
+              G.turnLog.challenge.challenger.name, 
+              challengeCharacters
+            )
           );
           setMsgLoading(false);
         } else {
           setMsg(
-            `${
-              isChallenger ? "you" : G.turnLog.challenge.challenger.name
-            } challenge${isChallenger ? "" : "s"}!\n Waiting for ${
-              G.turnLog.challenge.challenged.name
-            }'s response`
+            translation[lang]['challengeHappend'](
+              isChallenger ? translation[lang]['you'] : G.turnLog.challenge.challenger.name,
+              G.turnLog.challenge.challenged.name,
+              isChallenger
+            )
           );
           setMsgLoading(true);
         }
@@ -84,13 +83,13 @@ const AnnouncementArea = (props) => {
       else {
         if (ctx.activePlayers[G.turnLog.challenge.loser.id] === "loseCard") {
           if (G.turnLog.challenge.loser.id === playerID) {
-            setMsg("choose an influence to give up (challenge lost).");
+            setMsg(translation[lang]['chooseGiveUpChallengeLost']);
             setMsgLoading(false);
           } else {
             setMsg(
               `${
                 G.turnLog.challenge.challenged.id === playerID
-                  ? `your new card is ${G.turnLog.challenge.swapCard.character}.\n`
+                  ? `${translation[lang]['yourNewCard'](G.turnLog.challenge.swapCard.character)}.\n`
                   : ""
               }waiting for ${
                 G.turnLog.challenge.challenger.name
@@ -263,16 +262,7 @@ const AnnouncementArea = (props) => {
     }
 
     return () => clearTimeout(timer);
-  }, [
-    G.turnLog,
-    ctx.activePlayers,
-    ctx.currentPlayer,
-    moves,
-    hand,
-    isYourTurn,
-    name,
-    playerID,
-  ]);
+  }, [G.turnLog, ctx.activePlayers, ctx.currentPlayer, moves, hand, isYourTurn, name, playerID, translation, lang]);
 
   // on game over
   useEffect(() => {

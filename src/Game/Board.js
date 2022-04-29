@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Players, YourPlayer, BottomBar, AnnouncementArea, ChatLogSettings } from "./components";
 import "./Board.css";
+import { lang, translation } from '../translate';
 
 const Board = (props) => {
   const [revealDeck, setRevealDeck] = useState(false);
@@ -21,7 +22,7 @@ const Board = (props) => {
           <YourPlayer {...props} />
         </div>
         <div className="messages-actions-container">
-          <AnnouncementArea {...props} />
+          <AnnouncementArea {...props} translation={translation} lang={lang} />
           <BottomBar {...props} revealDeck={revealDeck} />
         </div>
         <div className="cls-col">
